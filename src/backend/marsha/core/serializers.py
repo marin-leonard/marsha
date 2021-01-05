@@ -471,10 +471,15 @@ class VideoSerializer(serializers.ModelSerializer):
 
         """
         if obj.live_state is not None:
+            hls_endpoint = re.sub(
+                r"^(https:\/\/)([a-zA-Z0-9]*\.mediapackage\..*amazonaws.com)(.*)$",
+                f"\\1{settings.CLOUDFRONT_LIVE_DOMAIN}\\3",
+                obj.live_info["mediapackage"]["endpoints"]["hls"]["url"]
+            )
             # Adaptive Bit Rate manifests
             return {
                 "manifests": {
-                    "hls": obj.live_info["mediapackage"]["endpoints"]["hls"]["url"],
+                    "hls": hls_endpoint,
                     "dash": None,
                 },
                 "mp4": {},

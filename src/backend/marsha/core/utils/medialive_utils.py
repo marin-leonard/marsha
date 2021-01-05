@@ -1,6 +1,7 @@
 """Utils to create MediaLive configuration."""
 import json
 import os
+import re
 
 from django.conf import settings
 
@@ -21,6 +22,9 @@ mediapackage_client = boto3.client("mediapackage", **aws_credentials)
 
 # Configure SSM client
 ssm_client = boto3.client("ssm", **aws_credentials)
+
+## Configure cloudfront client
+cloudfront_client = boto3.client("cloudfront", **aws_credentials)
 
 
 def create_mediapackage_channel(key):
@@ -217,6 +221,91 @@ def create_medialive_channel(key, medialive_input, mediapackage_channel):
     return medialive_channel
 
 
+def configure_cloudfront(hls_endpoint, key):
+    """Configure a cloudfront distribution to deliver hls stream."""
+    elements = re.match(
+        r"^https:\/\/(?P<domain>.*\.mediapackage\..*amazonaws.com)(?P<path>\/.*).m3u8$",
+        hls_endpoint,
+    )
+    new_origin = {
+        "DomainName": elements["domain"],
+        "Id": key,
+        "OriginPath": "",
+        "CustomHeaders": {
+            "Quantity": 0,
+        },
+        "CustomOriginConfig": {
+            "HTTPPort": 80,
+            "HTTPSPort": 443,
+            "OriginProtocolPolicy": "match-viewer",
+            "OriginSslProtocols": {
+                "Quantity": 1,
+                "Items": ["TLSv1"],
+            },
+            "OriginReadTimeout": 30,
+            "OriginKeepaliveTimeout": 5,
+        },
+        "ConnectionTimeout": 10,
+        "ConnectionAttempts": 3,
+    }
+    new_cache_behavior = {
+        "PathPattern": f"{elements['path']}*.*",
+        "TargetOriginId": key,
+        "ViewerProtocolPolicy": "redirect-to-https",
+        "AllowedMethods": {
+            "Quantity": 2,
+            "Items": ["GET", "HEAD"],
+            "CachedMethods": {"Quantity": 2, "Items": ["GET", "HEAD"]},
+        },
+        "ForwardedValues": {
+            "QueryString": True,
+            "Cookies": {
+                "Forward": "none",
+            },
+            "QueryStringCacheKeys": {"Quantity": 3, "Items": ["m", "start", "end"]},
+            "Headers": {"Quantity": 0},
+        },
+        "TrustedSigners": {
+            "Enabled": False,
+            "Quantity": 0,
+        },
+        "MinTTL": 0,
+        "MaxTTL": 31536000,
+        "DefaultTTL": 86400,
+        "SmoothStreaming": False,
+        "Compress": False,
+        "LambdaFunctionAssociations": {
+            "Quantity": 0,
+        },
+        "FieldLevelEncryptionId": "",
+    }
+
+    distribution_config = cloudfront_client.get_distribution_config(
+        Id=settings.CLOUDFRONT_LIVE_ID
+    )
+
+    distribution_config["DistributionConfig"]["Origins"]["Quantity"] += 1
+    distribution_config["DistributionConfig"]["Origins"]["Items"].append(new_origin)
+
+    if distribution_config["DistributionConfig"]["CacheBehaviors"]["Quantity"] == 0:
+        distribution_config["DistributionConfig"]["CacheBehaviors"].update(
+            {"Items": []}
+        )
+
+    distribution_config["DistributionConfig"]["CacheBehaviors"]["Quantity"] += 1
+    distribution_config["DistributionConfig"]["CacheBehaviors"]["Items"].append(
+        new_cache_behavior
+    )
+
+    print(distribution_config)
+
+    cloudfront_client.update_distribution(
+        Id=settings.CLOUDFRONT_LIVE_ID,
+        IfMatch=distribution_config["ETag"],
+        DistributionConfig=distribution_config["DistributionConfig"],
+    )
+
+
 def create_live_stream(key):
     """Create all AWS stack needed to stream a video.
 
@@ -237,6 +326,8 @@ def create_live_stream(key):
     medialive_channel = create_medialive_channel(
         key, medialive_input, mediapackage_channel
     )
+
+    configure_cloudfront(hls_endpoint["Url"], key)
 
     return {
         "medialive": {

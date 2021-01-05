@@ -237,6 +237,11 @@ class Base(Configuration):
 
     CLOUDFRONT_DOMAIN = values.Value(None)
 
+    # Cloud Front live configuration
+    CLOUDFRONT_LIVE_DOMAIN = values.Value(None)
+    CLOUDFRONT_LIVE_ID = values.SecretValue()
+    
+
     BYPASS_LTI_VERIFICATION = values.BooleanValue(False)
 
     # Cache

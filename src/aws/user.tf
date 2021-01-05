@@ -176,3 +176,28 @@ resource "aws_iam_user_policy" "live-streaming-policies" {
 }
 POLICY
 }
+
+# Grant user to update the cloudfront distribution
+
+resource "aws_iam_user_policy" "cloudfront-update-policies" {
+  name = "${terraform.workspace}-marsha-cloudfront-update-policies"
+  user = aws_iam_user.marsha_user.name
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "cloudfront",
+      "Effect": "Allow",
+      "Action": [
+        "cloudfront:GetDistribution",
+        "cloudfront:UpdateDistribution",
+        "cloudfront:GetDistributionConfig"
+      ],
+      "Resource": "${aws_cloudfront_distribution.marsha_cloudfront_live_distribution.arn}"
+    }
+  ]
+}
+POLICY
+}
