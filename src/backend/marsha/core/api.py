@@ -242,7 +242,10 @@ class VideoViewSet(viewsets.ModelViewSet):
         """
         if self.action in ["retrieve", "partial_update", "update"]:
             permission_classes = [
-                permissions.IsResourceAdmin | permissions.IsResourceInstructor
+                permissions.IsResourceAdmin
+                | permissions.IsResourceInstructor
+                | permissions.IsVideoPlaylistAdmin
+                | permissions.IsVideoOrganizationAdmin
             ]
         elif self.action in ["list"]:
             permission_classes = [IsAuthenticated]
@@ -318,7 +321,10 @@ class VideoViewSet(viewsets.ModelViewSet):
         detail=True,
         url_path="initiate-upload",
         permission_classes=[
-            permissions.IsResourceAdmin | permissions.IsResourceInstructor
+            permissions.IsResourceAdmin
+            | permissions.IsResourceInstructor
+            | permissions.IsVideoPlaylistAdmin
+            | permissions.IsVideoOrganizationAdmin
         ],
     )
     # pylint: disable=unused-argument
