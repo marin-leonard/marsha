@@ -654,6 +654,13 @@ class TimedTextTrackViewSet(viewsets.ModelViewSet):
         """Instantiate and return the list of permissions that this view requires."""
         if self.action == "metadata":
             permission_classes = [permissions.IsVideoToken]
+        elif self.action == "list":
+            permission_classes = [
+                permissions.IsVideoRelatedAdmin
+                | permissions.IsVideoRelatedInstructor
+                | permissions.IsParamsVideoAdminThroughOrganization
+                | permissions.IsParamsVideoAdminThroughPlaylist
+            ]
         else:
             permission_classes = [
                 permissions.IsVideoRelatedAdmin | permissions.IsVideoRelatedInstructor
@@ -663,8 +670,15 @@ class TimedTextTrackViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Restrict list access to timed text tracks related to the video in the JWT token."""
         user = self.request.user
-        if isinstance(user, TokenUser):
+        if isinstance(user, TokenUser) and not user.token.get("user_id"):
             return TimedTextTrack.objects.filter(video__id=user.id)
+
+        video_id = self.request.data.get("video") or self.request.query_params.get(
+            "video"
+        )
+        if video_id:
+            return TimedTextTrack.objects.filter(video__id=video_id)
+
         return TimedTextTrack.objects.none()
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")

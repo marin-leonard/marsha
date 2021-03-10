@@ -271,6 +271,54 @@ class IsParamsPlaylistAdminThroughOrganization(permissions.BasePermission):
             return False
 
 
+class IsParamsVideoAdminThroughOrganization(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user provides the ID for an existing
+    video, and has an access to this video's parent organization with an administrator role.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if the video from the params or body of the request exists and
+        the current logged in user is one of the administrators of the organization to which
+        this video's playlist belongs.
+        """
+        video_id = request.data.get("video") or request.query_params.get("video")
+        return models.OrganizationAccess.objects.filter(
+            role=ADMINISTRATOR,
+            organization__playlists__videos__id=video_id,
+            user__id=request.user.id,
+        ).exists()
+
+
+class IsParamsVideoAdminThroughPlaylist(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user provides the ID for an existing
+    video, and has an access to this video's parent playlist with an administrator role.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if the video from the params or body of the request exists and
+        the current logged in user is one of the administrators of the playlist to which
+        this video belongs.
+        """
+        video_id = request.data.get("video") or request.query_params.get("video")
+        return models.PlaylistAccess.objects.filter(
+            role=ADMINISTRATOR,
+            playlist__videos__id=video_id,
+            user__id=request.user.id,
+        ).exists()
+
+
 class IsOrganizationAdmin(permissions.BasePermission):
     """
     Allow a request to proceed. Permission class.
