@@ -15,6 +15,7 @@ import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardPaneButtons } from '../DashboardPaneButtons';
 import { DashboardThumbnail } from '../DashboardThumbnail';
 import { DashboardVideoHarvested } from '../DashboardVideoHarvested';
+import { DashboardVideoLiveJitsi } from '../DashboardVideoLiveJitsi';
 import { DashboardVideoLive } from '../DashboardVideoLive';
 import { DashboardVideoPaneDownloadOption } from '../DashboardVideoPaneDownloadOption';
 import { DashboardVideoPaneTranscriptOption } from '../DashboardVideoPaneTranscriptOption';
@@ -184,12 +185,20 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
       if (video.live_state !== null) {
         return (
           <DashboardVideoPaneInnerContainer>
-            <Box direction={'row'}>
+            {/*<Box direction={'row'}>
               <Box basis={'1/2'} margin={'small'}>
                 <CommonStatusLine video={video} />
               </Box>
               <Box basis={'1/2'} margin={'small'}>
                 <DashboardVideoLive video={video} />
+              </Box>
+            </Box>*/}
+            <Box direction={'column'}>
+              <Box margin={'small'}>
+                <CommonStatusLine video={video} />
+              </Box>
+              <Box margin={'small'}>
+                <DashboardVideoLiveJitsi video={video} />
               </Box>
             </Box>
           </DashboardVideoPaneInnerContainer>
