@@ -28,7 +28,7 @@ const messages = defineMessages({
 
 type configureLiveStatus = 'pending' | 'success' | 'error';
 
-/** Props shape for the DashboardVideoLiveConfigureButton component. */
+/** Props shape for the DashboardVideoLiveConfigureButtonProps component. */
 export interface DashboardVideoLiveConfigureButtonProps {
   video: Video;
   type: LiveModeType;

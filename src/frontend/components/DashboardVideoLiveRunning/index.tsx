@@ -12,6 +12,7 @@ import { CHAT_ROUTE } from '../Chat/route';
 import { PLAYER_ROUTE } from '../routes';
 import { modelName } from '../../types/models';
 import { LiveModeType, Video } from '../../types/tracks';
+import { DashboardMountOnStage } from '../DashboardMountOnStage';
 
 const messages = defineMessages({
   showLive: {
@@ -72,6 +73,9 @@ export const DashboardVideoLiveRunning = ({
         )}
         <DashboardVideoLiveStopButton video={video} />
       </Box>
+        {video.live_type === LiveModeType.JITSI  &&
+          <DashboardMountOnStage video={video}/>
+        }
       {displayChat && <Chat video={video} />}
     </Box>
   );

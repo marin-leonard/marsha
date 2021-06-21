@@ -14,7 +14,7 @@ const DashboardVideoLiveJitsi = ({ video }: DashboardVideoLiveJitsiProps) => {
   const loadJitsiScript = () =>
     new Promise((resolve) => {
       const script = document.createElement('script');
-      script.src = video.live_info.jitsi!.external_api_url!;
+      script.src = 'https://meet.jit.si/external_api.js' // video.live_info.jitsi!.external_api_url!; // Cannot read property 'external_api_url' of undefined
       script.async = true;
       script.onload = resolve;
       document.body.appendChild(script);
@@ -59,7 +59,7 @@ const DashboardVideoLiveJitsi = ({ video }: DashboardVideoLiveJitsiProps) => {
     ];
 
     const _jitsi = new window.JitsiMeetExternalAPI(
-      video.live_info.jitsi!.domain!,
+      'meet.jit.si', //video.live_info.jitsi!.domain!, // Cannot read property 'domain' of undefined
       {
         configOverwrite: {
           constraints: {
@@ -73,12 +73,12 @@ const DashboardVideoLiveJitsi = ({ video }: DashboardVideoLiveJitsiProps) => {
           },
           resolution: 720,
           toolbarButtons,
-          ...video.live_info.jitsi!.config_overwrite,
+          //...video.live_info.jitsi!.config_overwrite,
         },
         interfaceConfigOverwrite: {
           HIDE_INVITE_MORE_HEADER: true,
           TOOLBAR_BUTTONS: toolbarButtons,
-          ...video.live_info.jitsi!.interface_config_overwrite,
+          //...video.live_info.jitsi!.interface_config_overwrite,
         },
         parentNode: jitsiNode.current!,
         roomName: video.id,

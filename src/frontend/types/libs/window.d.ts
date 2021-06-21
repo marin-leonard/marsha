@@ -6,6 +6,7 @@ declare global {
     converse: {
       insertInto: (container: HTMLElement) => void;
       initialize: (options: any) => void;
+      env: any;
       plugins: {
         add: (name: string, plugin: any) => void;
       };
