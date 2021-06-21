@@ -6,7 +6,7 @@ import { DashboardButton } from '../DashboardPaneButtons';
 
 const messages = defineMessages({
   askInstructor: {
-    defaultMessage: 'Ask',
+    defaultMessage: 'Mount On Stage',
     description: 'Ask to mount on stage',
     id: 'components.DashboardMountOnStage.askInstructor',
   },

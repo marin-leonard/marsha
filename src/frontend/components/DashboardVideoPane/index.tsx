@@ -190,14 +190,6 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
                 <DashboardVideoLive video={video} />
               </Box>
             </Box>
-            <Box direction={'column'}>
-              <Box margin={'small'}>
-                <CommonStatusLine video={video} />
-              </Box>
-              <Box margin={'small'}>
-                <DashboardVideoLiveJitsi video={video} />
-              </Box>
-            </Box>
           </DashboardVideoPaneInnerContainer>
         );
       } else if (

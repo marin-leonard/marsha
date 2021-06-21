@@ -64,9 +64,7 @@ export const converseMounter = () => {
           const _converse = this._converse;
 
           _converse.on('connected', () => {
-            console.log(_converse.connection)
             _converse.connection.addHandler((message: any) => {
-              console.log(message);
               if (message.getAttribute('type') === "event" && message.getAttribute('event') === "asktomount") {
                 console.log("ASKTOMOUNT");
                 const jid = message.getAttribute('from')
@@ -95,7 +93,7 @@ export const converseMounter = () => {
             window.addEventListener('asktomount', () => {
               var msg = converse.env.$build('message', {
                 from: _converse.connection.jid,
-                to: "1cd13376-4051-42d5-9d46-c1a2eb22718a@conference.prosody/" + INSTRUCTOR_USERNAME,
+                to: xmpp.conference_url + '/' + INSTRUCTOR_USERNAME,
                 type: "event",
                 event: "asktomount"
               });
@@ -135,7 +133,7 @@ export const converseMounter = () => {
             window.addEventListener('leave', (params: any) => {
               var msg = converse.env.$build('message', {
                 from: _converse.connection.jid,
-                to: "1cd13376-4051-42d5-9d46-c1a2eb22718a@conference.prosody/" + INSTRUCTOR_USERNAME,
+                to: xmpp.conference_url + '/' + INSTRUCTOR_USERNAME,
                 type: "event",
                 event: "leave"
               });
