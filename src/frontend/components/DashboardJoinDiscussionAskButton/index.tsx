@@ -6,21 +6,21 @@ import { DashboardButton } from '../DashboardPaneButtons';
 
 const messages = defineMessages({
   askInstructor: {
-    defaultMessage: 'Mount On Stage',
-    description: 'Ask to mount on stage',
-    id: 'components.DashboardMountOnStage.askInstructor',
+    defaultMessage: 'Send request to join the discussion',
+    description: 'Ask the instructor to join the discussion',
+    id: 'components.DashboardJoinDiscussion.askInstructor',
   },
 });
 
-interface DashboardMountOnStageAskButtonProps {
+interface DashboardJoinDiscussionAskButtonProps {
   video: Video | Document;
   onClick: () => void;
 }
 
-export const DashboardMountOnStageAskButton = ({
+export const DashboardJoinDiscussionAskButton = ({
   video,
   onClick,
-}: DashboardMountOnStageAskButtonProps) => {
+}: DashboardJoinDiscussionAskButtonProps) => {
 
   const askInstructor = useCallback(async () => {
     const event = new Event('asktomount');
@@ -29,7 +29,7 @@ export const DashboardMountOnStageAskButton = ({
   }, [video]);
 
   return (
-    <React.Fragment>
+    <React.Fragment >
       <DashboardButton
         label={<FormattedMessage {...messages.askInstructor} />}
         primary={true}

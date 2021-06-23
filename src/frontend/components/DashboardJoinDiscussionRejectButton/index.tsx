@@ -1,4 +1,5 @@
 
+import { Button } from 'grommet';
 import React, { useCallback, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Video } from '../../types/tracks';
@@ -7,8 +8,8 @@ import { DashboardButton } from '../DashboardPaneButtons';
 const messages = defineMessages({
   rejectStudent: {
     defaultMessage: 'reject',
-    description: 'Reject the student on stage',
-    id: 'components.DashboardMountOnStage.rejectStudent',
+    description: 'Reject the student of the discussion',
+    id: 'components.DashboardJoinDiscussion.rejectStudent',
   },
 });
 
@@ -17,17 +18,17 @@ interface Student {
   id: String;
 }
 
-interface DashboardMountOnStageRejectButtonProps {
+interface DashboardJoinDiscussionRejectButtonProps {
   video: Video;
   student: Student;
   onClick: (student: Student) => void;
 }
 
-export const DashboardMountOnStageRejectButton = ({
+export const DashboardJoinDiscussionRejectButton = ({
   video,
   student,
   onClick,
-}: DashboardMountOnStageRejectButtonProps) => {
+}: DashboardJoinDiscussionRejectButtonProps) => {
 
   const rejectStudent = useCallback(async () => {
     const event = new CustomEvent('reject', { detail: { id: student.id } });
@@ -37,9 +38,10 @@ export const DashboardMountOnStageRejectButton = ({
 
   return (
     <React.Fragment>
-      <DashboardButton
+      <Button
         label={<FormattedMessage {...messages.rejectStudent} />}
         onClick={rejectStudent}
+        style={{ width: "100px !important", margin: "10px" }}
       />
     </React.Fragment>
   );

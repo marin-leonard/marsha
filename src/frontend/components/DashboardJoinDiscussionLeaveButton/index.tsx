@@ -6,21 +6,21 @@ import { DashboardButton } from '../DashboardPaneButtons';
 
 const messages = defineMessages({
   askInstructor: {
-    defaultMessage: 'Leave',
-    description: 'Leave the stage',
-    id: 'components.DashboardMountOnStage.leaveStage',
+    defaultMessage: 'Leave the discussion',
+    description: 'Leave the discussion',
+    id: 'components.DashboardJoinDiscussion.leaveStage',
   },
 });
 
-interface DashboardMountOnStageLeaveButtonProps {
+interface DashboardJoinDiscussionLeaveButtonProps {
   video: Video | Document;
   onClick: () => void;
 }
 
-export const DashboardMountOnStageLeaveButton = ({
+export const DashboardJoinDiscussionLeaveButton = ({
   video,
   onClick,
-}: DashboardMountOnStageLeaveButtonProps) => {
+}: DashboardJoinDiscussionLeaveButtonProps) => {
 
   const askInstructor = useCallback(async () => {
     const event = new Event('leave');
